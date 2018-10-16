@@ -1,0 +1,18 @@
+baseWebUrl: https://sandbox.tymeloans.net
+baseUrl: https://172.32.27.109
+mockUrl: http://localhost
+port: 8243
+version: v1.0.0
+
+
+baseUrlAccessToken: https://172.32.27.109:8243/token
+baseUrlGetOTP: http://192.168.200.196:8811/mock/otp/
+
+
+authorization: V250SkFXTjY2aFZPdkluZm5oSXJicWppQVF3YTpwTV9ha09pYktvY2dRWkFBQk1DYWZEMV9odWNh
+clientIdNoneDevice: Zo1iMHxnGwq0wEa4fzSTEuh_NnQa
+clientSecretNoneDevice: yjva_LkouGuqD1661IlNfs78tvca
+clientIdTrustedDevice: hVWhyb3IIRkVKick3zf6vbFlUCEa
+clientSecretTrustedDevice: kc5VTILrqwljdWblDNoANWnIPlUa
+
+redisHost: 172.32.12.161

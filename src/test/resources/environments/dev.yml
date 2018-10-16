@@ -1,0 +1,18 @@
+#baseUrl: https://172.31.8.216
+baseWebUrl: https://dev.tymeloans.net
+baseUrl: https://api.dev.tymeloans.net
+mockUrl: http://localhost
+
+port: 443
+version: v1.0.0
+
+baseUrlAccessToken: https://172.32.27.109:8243/token
+baseUrlGetOTP: http://192.168.200.196:8811/mock/otp/
+
+authorization: VlA2ZjEzRG1TWTJVaTdVcmdqRWZZb2Z1UWRrYTpWTEFiZ2Z4TTRmUlRfRHJuV3JvOTZLdVRCd2th
+clientIdNoneDevice: ihfAP4whQYqpZUVBvjV8WjHr_9sa
+clientSecretNoneDevice: dXImb6xeiPGdq7N99BRO77XaUs4a
+clientIdTrustedDevice: y1Trt3oSrfbLHxar6jdXTr8YhcYa
+clientSecretTrustedDevice: lLIRfmBfE1n2h95UKsDba4cHhhAa
+
+redisHost: 172.31.32.124
