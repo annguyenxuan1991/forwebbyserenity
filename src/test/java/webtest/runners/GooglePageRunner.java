@@ -15,5 +15,5 @@ import org.junit.runner.RunWith;
         glue = {"webtest/steps"}
 )
 
-public class LandingPageRunner {
+public class GooglePageRunner {
 }

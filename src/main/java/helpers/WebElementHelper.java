@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 import static net.thucydides.core.webdriver.ThucydidesWebDriverSupport.getDriver;
 
 /**
- * This class solves hook issues with WebElement.
+ * This class solves common issues with WebElement.
  */
 public class WebElementHelper {
     private static final Logger LOGGER = Logger.getLogger(WebElementHelper.class);
@@ -57,16 +57,16 @@ public class WebElementHelper {
         final FluentWait<WebDriver> wait = new FluentWait<>(getDriver()).withTimeout(Constants.RENDER_ELEMENT_TIMEOUT, TimeUnit.SECONDS)
                 .withMessage("Wait out while trying to input text " + text);
         return wait.until((Function<WebDriver, Boolean>) driver -> {
-                element.clear();
-                element.sendKeys(text);
-                JavaScriptExecutorHelper.blur(element);
-                if (text.equalsIgnoreCase(element.getAttribute("value"))) {
-                    return true;
-                }
-                LOGGER.info("Expected text='" + text + "' but the value is '" + element.getAttribute("value")
-                        + "'. Retry to fill text");
-                return false;
-            });
+            element.clear();
+            element.sendKeys(text);
+            JavaScriptExecutorHelper.blur(element);
+            if (text.equalsIgnoreCase(element.getAttribute("value"))) {
+                return true;
+            }
+            LOGGER.info("Expected text='" + text + "' but the value is '" + element.getAttribute("value")
+                    + "'. Retry to fill text");
+            return false;
+        });
     }
 
     /**
@@ -91,15 +91,6 @@ public class WebElementHelper {
     public static WebElement waitAndGetElement(final By locator, final long timeout) {
         waitForPresenceOfElementLocated(locator, timeout);
         return findElement(locator);
-    }
-
-    public static List<WebElement> waitAndGetElements(final By locator, final long timeout) {
-        waitForPresenceOfElementLocated(locator, timeout);
-        return findElements(locator);
-    }
-
-    public static List<WebElement> waitAndGetElements(final By locator) {
-        return waitAndGetElements(locator, Constants.RENDER_ELEMENT_TIMEOUT);
     }
 
     public static WebElement waitAndGetElement(final By locator) {
@@ -127,8 +118,7 @@ public class WebElementHelper {
     }
 
     public static WebElement waitForElementClickable(final By locator, long timeout) {
-        WebElement webElement = new WebDriverWait(getDriver(), timeout).until(ExpectedConditions.elementToBeClickable(locator));
-        return webElement;
+        return new WebDriverWait(getDriver(), timeout).until(ExpectedConditions.elementToBeClickable(locator));
     }
 
     public static void clickUntilOK(final By locator, long timeout, long poolingTime,
@@ -137,16 +127,16 @@ public class WebElementHelper {
                 .pollingEvery(poolingTime, TimeUnit.SECONDS).withMessage("Failed to retry click.")
                 .ignoring(NoSuchElementException.class, StaleElementReferenceException.class);
         wait.until((Function<WebDriver, Boolean>) driver -> {
-                if (condition.apply(driver)) {
-                    return true;
-                }
-                try {
-                    findElement(locator).click();
-                } catch (WebDriverException e) {
-                    LOGGER.error("Cannot click the element because it disappears. Continue test.", e);
-                }
-                return false;
-            });
+            if (condition.apply(driver)) {
+                return true;
+            }
+            try {
+                findElement(locator).click();
+            } catch (WebDriverException e) {
+                LOGGER.error("Cannot click the element because it disappears. Continue test.", e);
+            }
+            return false;
+        });
     }
 
     public static void waitForElementExist(final By locator) {
@@ -180,26 +170,34 @@ public class WebElementHelper {
     }
 
     public static void waitAndSendKey(final By locator, String key) {
-        waitForPresenceOfElementLocated(locator);
-        findElement(locator).sendKeys(key);
+        waitForElementClickable(locator, Constants.RENDER_ELEMENT_TIMEOUT).sendKeys(key);
     }
 
-    public static void waitForPresenceOfElementLocated(final By locator) {
-        waitForPresenceOfElementLocated(locator, Constants.RENDER_ELEMENT_TIMEOUT);
+    public static WebElement waitForPresenceOfElementLocated(final By locator) {
+        return waitForPresenceOfElementLocated(locator, Constants.RENDER_ELEMENT_TIMEOUT);
     }
 
-    public static void waitForPresenceOfElementLocated(final By locator, final long timeout) {
+    public static WebElement waitForPresenceOfElementLocated(final By locator, final long timeout) {
         final FluentWait<WebDriver> wait = new FluentWait<>(getDriver()).withTimeout(timeout, TimeUnit.SECONDS);
-        wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+        return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
     }
 
-    public static void waitForVisibilityOfElementLocated(final By locator) {
-        waitForVisibilityOfElementLocated(locator, Constants.RENDER_ELEMENT_TIMEOUT);
+    public static List<WebElement> waitForPresenceOfElementsLocated(final By locator) {
+        return waitForPresenceOfElementsLocated(locator, Constants.RENDER_ELEMENT_TIMEOUT);
     }
 
-    public static void waitForVisibilityOfElementLocated(final By locator, final long timeout) {
+    public static List<WebElement> waitForPresenceOfElementsLocated(final By locator, final long timeout) {
         final FluentWait<WebDriver> wait = new FluentWait<>(getDriver()).withTimeout(timeout, TimeUnit.SECONDS);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
+    }
+
+    public static WebElement waitForVisibilityOfElementLocated(final By locator) {
+        return waitForVisibilityOfElementLocated(locator, Constants.RENDER_ELEMENT_TIMEOUT);
+    }
+
+    public static WebElement waitForVisibilityOfElementLocated(final By locator, final long timeout) {
+        final FluentWait<WebDriver> wait = new FluentWait<>(getDriver()).withTimeout(timeout, TimeUnit.SECONDS);
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     /**
@@ -287,9 +285,9 @@ public class WebElementHelper {
     }
 
     public static void clearAndSetText(final By locator, final String text) {
-        WebElement input = waitAndGetElement(locator);
-        input.clear();
-        input.sendKeys(text);
+        WebElement webElement = waitForElementClickable(locator, Constants.RENDER_ELEMENT_TIMEOUT);
+        webElement.clear();
+        webElement.sendKeys(text);
     }
 
     public static String getAttributeValue(final By locator, final String attributeName) {
@@ -301,10 +299,10 @@ public class WebElementHelper {
         return element.getAttribute(attributeName);
     }
 
-    public static void waitForURLContains(final String text) {
+    public static boolean waitForURLContains(final String text) {
         final FluentWait<WebDriver> wait = new FluentWait<>(getDriver())
                 .withTimeout(Constants.LOADING_TIMEOUT, TimeUnit.SECONDS).ignoring(NoSuchElementException.class);
-        wait.until((Function<WebDriver, Boolean>) driver -> driver.getCurrentUrl().contains(text));
+        return wait.until((Function<WebDriver, Boolean>) driver -> driver.getCurrentUrl().contains(text));
     }
 
     public static void tryToClickUntilDisappear(final By locator) {
@@ -314,7 +312,7 @@ public class WebElementHelper {
             while(findElement(locator).isDisplayed()) {
                 findElement(locator).click();
             }
-            return findElement(locator).isDisplayed();
+            return !findElement(locator).isDisplayed();
         });
     }
 

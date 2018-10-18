@@ -11,5 +11,5 @@ public class PageUrlConstants {
      * Define your page url in here
      */
     private static final EnvironmentModel environmentModel = EnvironmentHandler.getInstance().getEnvironment();
-    public static final String LANDING_PAGE_URL = environmentModel.getBaseWebUrl();
+    public static final String GOOGLE_PAGE_URL = environmentModel.getBaseWebUrl();
 }

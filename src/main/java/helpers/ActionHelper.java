@@ -18,7 +18,7 @@ public class ActionHelper {
     }
 
     public static void moveToAndSendKeys(final By locator, final int positionIndexFrom0, final String value) {
-        WebElement element = WebElementHelper.waitAndGetElements(locator).get(positionIndexFrom0);
+        WebElement element = WebElementHelper.waitForPresenceOfElementsLocated(locator).get(positionIndexFrom0);
         new Actions(getDriver()).moveToElement(element).click().sendKeys(value).perform();
     }
 

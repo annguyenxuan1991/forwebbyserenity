@@ -1,8 +1,11 @@
-Feature: PL01.01 Get Started
+@FeatureId
+Feature: Story name
 
   Background:
-    Given User is on loan offering page
+    Given User is on Google page
 
-  @TestRailCase:129428
-  Scenario: UI of your page
-    Then The UI of Landing page is displayed and allow user to see rate and fee, process SAID verification
+  @TestId
+  Scenario: Search some thing
+    When user input "Game" on Search box
+    And user clicks Search button
+    Then that is it .-.
