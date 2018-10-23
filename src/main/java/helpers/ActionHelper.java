@@ -22,6 +22,12 @@ public class ActionHelper {
         new Actions(getDriver()).moveToElement(element).click().sendKeys(value).perform();
     }
 
+    public static void moveToAndClearText(final By locator) {
+        WebElement element = WebElementHelper.waitForPresenceOfElementLocated(locator);
+        new Actions(getDriver()).moveToElement(element).click()
+                .sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.BACK_SPACE).perform();
+    }
+
     public static void dragAndDrop(By dragLocator, By dropLocator) {
         dragAndDrop(getDriver().findElement(dragLocator), getDriver().findElement(dropLocator));
     }

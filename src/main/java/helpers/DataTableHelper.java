@@ -34,6 +34,22 @@ public class DataTableHelper {
     }
 
     /**
+     * Convert a DataTable representing a list of Objects to List of HashMaps.
+     * - Note: the first row is considered the headers describing the data table.
+     *
+     * @param dataTable DataTable to convert.
+     * @return a List of DataTable
+     */
+    public static List<String> convertDataTableToList(DataTable dataTable) {
+        List<String> result= new ArrayList<>();
+        for(int i = 0; i < dataTable.raw().size(); i++) {
+            result.add(dataTable.raw().get(i).get(0));
+        }
+
+        return result;
+    }
+
+    /**
      * Convert a DataTable representing a Hash as input for scenario.
      * - Note: the first row is considered the headers describing the data table.
      *

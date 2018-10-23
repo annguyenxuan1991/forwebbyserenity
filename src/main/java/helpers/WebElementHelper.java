@@ -89,8 +89,7 @@ public class WebElementHelper {
     }
 
     public static WebElement waitAndGetElement(final By locator, final long timeout) {
-        waitForPresenceOfElementLocated(locator, timeout);
-        return findElement(locator);
+        return waitForPresenceOfElementLocated(locator, timeout);
     }
 
     public static WebElement waitAndGetElement(final By locator) {
@@ -105,20 +104,23 @@ public class WebElementHelper {
     }
 
     public static void waitAndClick(final By locator, long timeout) {
-        waitForElementClickable(locator, timeout);
-        findElement(locator).click();
+        waitForElementClickable(findElement(locator), timeout).click();
     }
 
     public static boolean waitAndCheckClickable(final By locator) {
         return waitAndCheckClickable(locator, Constants.RENDER_ELEMENT_TIMEOUT);
     }
 
-    public static boolean waitAndCheckClickable(final By locator, long timeout) {
-        return waitForElementClickable(locator, timeout).isEnabled();
+    public static void waitAndCheckClick(final WebElement element) {
+        waitForElementClickable(element, Constants.RENDER_ELEMENT_TIMEOUT).click();
     }
 
-    public static WebElement waitForElementClickable(final By locator, long timeout) {
-        return new WebDriverWait(getDriver(), timeout).until(ExpectedConditions.elementToBeClickable(locator));
+    public static boolean waitAndCheckClickable(final By locator, long timeout) {
+        return waitForElementClickable(findElement(locator), timeout).isEnabled();
+    }
+
+    public static WebElement waitForElementClickable(final WebElement element, long timeout) {
+        return new WebDriverWait(getDriver(), timeout).until(ExpectedConditions.elementToBeClickable(element));
     }
 
     public static void clickUntilOK(final By locator, long timeout, long poolingTime,
@@ -139,11 +141,14 @@ public class WebElementHelper {
         });
     }
 
-    public static void waitForElementExist(final By locator) {
-        waitForPresenceOfElementLocated(locator, Constants.RENDER_ELEMENT_TIMEOUT);
+    public static boolean waitAndCheckElementExist(final By locator) {
+        if(waitForPresenceOfElementLocated(locator, Constants.RENDER_ELEMENT_TIMEOUT) != null) {
+            return true;
+        }
+        return false;
     }
 
-    public static void waitForAnyElementExist(final By... locators) {
+    public static void waitAndCheckAnyElemntExist(final By... locators) {
         waitForAnyElementExist(Constants.LOADING_TIMEOUT, locators);
     }
 
@@ -170,7 +175,7 @@ public class WebElementHelper {
     }
 
     public static void waitAndSendKey(final By locator, String key) {
-        waitForElementClickable(locator, Constants.RENDER_ELEMENT_TIMEOUT).sendKeys(key);
+        waitForElementClickable(findElement(locator), Constants.RENDER_ELEMENT_TIMEOUT).sendKeys(key);
     }
 
     public static WebElement waitForPresenceOfElementLocated(final By locator) {
@@ -285,14 +290,13 @@ public class WebElementHelper {
     }
 
     public static void clearAndSetText(final By locator, final String text) {
-        WebElement webElement = waitForElementClickable(locator, Constants.RENDER_ELEMENT_TIMEOUT);
+        WebElement webElement = waitForElementClickable(findElement(locator), Constants.RENDER_ELEMENT_TIMEOUT);
         webElement.clear();
         webElement.sendKeys(text);
     }
 
     public static String getAttributeValue(final By locator, final String attributeName) {
-        waitForElementExist(locator);
-        return findElement(locator).getAttribute(attributeName);
+        return waitForPresenceOfElementLocated(locator).getAttribute(attributeName);
     }
 
     public static String getAttributeValue(final WebElement element, final String attributeName) {
@@ -320,7 +324,7 @@ public class WebElementHelper {
         return getDriver().findElement(locator);
     }
 
-    private static List<WebElement> findElements(final By locator) {
+    public static List<WebElement> findElements(final By locator) {
         return getDriver().findElements(locator);
     }
 }
